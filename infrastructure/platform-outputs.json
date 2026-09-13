@@ -1,0 +1,12 @@
+{
+  "AtithiPlatform-dev": {
+    "UserPoolClientId": "u44sigcus4frr6vnv7v9d8br1",
+    "TableName": "atithi-main-dev",
+    "MediaBucketName": "atithi-media-dev-325355907299",
+    "ApiUrl": "https://838loo47jh.execute-api.ap-south-1.amazonaws.com",
+    "UserPoolId": "ap-south-1_J1HbiyZYd",
+    "ExportsOutputRefUserPoolWebClient4C9370B02E2C9FF9": "u44sigcus4frr6vnv7v9d8br1",
+    "ExportsOutputRefUserPool6BA7E5F296FD7236": "ap-south-1_J1HbiyZYd",
+    "ExportsOutputFnGetAttHttpApiF5A9A8A7ApiEndpoint082134F8": "https://838loo47jh.execute-api.ap-south-1.amazonaws.com"
+  }
+}

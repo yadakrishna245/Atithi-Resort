@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+  }
+
+  /* Indian scripts have taller glyphs; a little extra leading keeps
+     Devanagari, Tamil and Malayalam from clipping in dense lists. */
+  :lang(hi), :lang(mr), :lang(bn), :lang(gu), :lang(pa),
+  :lang(ta), :lang(te), :lang(kn), :lang(ml) {
+    line-height: 1.7;
+  }
+
+  /* Never remove focus outlines — keyboard users depend on them. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-600;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium
+           transition-all disabled:cursor-not-allowed disabled:opacity-50;
+    /* 44px minimum touch target */
+    min-height: 44px;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-700 text-white shadow-glow hover:bg-brand-600 hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply btn border border-slate-300 bg-white text-slate-800 hover:bg-slate-50;
+  }
+
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm
+           placeholder:text-slate-400 focus:border-brand-600 focus:ring-1 focus:ring-brand-600;
+    min-height: 44px;
+  }
+
+  .label {
+    @apply mb-1 block text-sm font-medium text-slate-700;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+
+  .badge-verified {
+    @apply badge bg-emerald-50 text-emerald-800;
+  }
+
+  .badge-info {
+    @apply badge bg-slate-100 text-slate-700;
+  }
+
+  .badge-warn {
+    @apply badge bg-amber-50 text-amber-800;
+  }
+
+  /* --- Premium glass ("frosted") surfaces, Apple-style translucency --- */
+
+  .glass {
+    @apply border border-white/25 bg-white/10 shadow-glass backdrop-blur-xl;
+  }
+
+  .glass-panel {
+    @apply rounded-3xl border border-white/30 bg-white/15 shadow-glass-lg backdrop-blur-2xl;
+  }
+
+  .glass-card {
+    @apply rounded-2xl border border-white/60 bg-white/70 shadow-glass backdrop-blur-xl
+           transition-all duration-300 hover:-translate-y-1 hover:shadow-glass-lg;
+  }
+
+  .glass-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/60
+           px-4 py-2 text-sm font-medium text-slate-800 shadow-sm backdrop-blur-md
+           transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-glass;
+  }
+
+  .glass-chip[aria-pressed='true'] {
+    @apply border-brand-500/60 bg-brand-600/90 text-white;
+  }
+
+  .btn-glass-primary {
+    @apply btn rounded-full border border-white/40 bg-brand-600/90 text-white shadow-glow
+           backdrop-blur-md hover:bg-brand-500 hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

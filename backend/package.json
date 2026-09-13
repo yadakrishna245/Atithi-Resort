@@ -1,0 +1,31 @@
+{
+  "name": "@atithi/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "tsx watch src/local/server.ts"
+  },
+  "dependencies": {
+    "@atithi/shared": "*",
+    "@aws-sdk/client-bedrock-runtime": "^3.685.0",
+    "@aws-sdk/client-dynamodb": "^3.685.0",
+    "@aws-sdk/client-s3": "^3.685.0",
+    "@aws-sdk/client-secrets-manager": "^3.685.0",
+    "@aws-sdk/client-sns": "^3.685.0",
+    "@aws-sdk/lib-dynamodb": "^3.685.0",
+    "@aws-sdk/s3-request-presigner": "^3.685.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^22.8.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}
