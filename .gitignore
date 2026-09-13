@@ -18,6 +18,11 @@ build/
 # AWS CDK
 infrastructure/cdk.out/
 infrastructure/cdk.context.json
+# Compiled infra artifacts (tsc output from the .ts sources)
+infrastructure/bin/*.js
+infrastructure/bin/*.js.map
+infrastructure/lib/*.js
+infrastructure/lib/*.js.map
 
 # Logs
 *.log

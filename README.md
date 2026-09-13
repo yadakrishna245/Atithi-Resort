@@ -42,6 +42,38 @@ npm test -w backend            # tenant isolation + AI grounding guards
 npm run dev:web                # run the app locally
 ```
 
+## One-click deploy to a fresh AWS account
+
+Everything — infra, backend, frontend, S3 + CloudFront — deploys with a single script.
+On a brand-new AWS account you only need three steps:
+
+```bash
+aws configure          # 1. paste access key + secret (region is optional)
+git clone <this-repo> && cd Atithi-resort-project
+./deploy.sh            # 3. Linux / macOS / Git-Bash / WSL
+```
+
+On Windows PowerShell use the `.ps1` instead:
+
+```powershell
+aws configure
+git clone <this-repo>; cd Atithi-resort-project
+./deploy.ps1
+```
+
+The script installs dependencies, builds every workspace, bootstraps CDK if the
+account has never been bootstrapped, deploys the platform stack (DynamoDB, Cognito,
+Lambda, API Gateway), auto-wires `frontend/.env.production` from the live stack
+outputs, builds the SPA, deploys the web stack (S3 + CloudFront), and prints the
+**CloudFront URL** at the end.
+
+Defaults to region `ap-south-1` (India data residency). Override with a flag or env var:
+
+```bash
+AWS_REGION=us-east-1 STAGE=prod ./deploy.sh
+./deploy.ps1 -Region us-east-1 -Stage prod
+```
+
 Deployment, cost model and AWS setup: **[docs/18 — AWS Serverless Architecture & Cost](docs/18-aws-serverless-architecture-and-cost.md)**
 
 ---

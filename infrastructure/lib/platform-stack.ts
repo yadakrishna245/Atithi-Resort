@@ -78,7 +78,7 @@ export class AtithiPlatformStack extends cdk.Stack {
     // =======================================================================
 
     this.mediaBucket = new s3.Bucket(this, 'MediaBucket', {
-      bucketName: `atithi-media-${stage}-${this.account}`,
+      bucketName: `atithi-media-${stage}-${this.account}-${this.region}`,
       encryption: s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       enforceSSL: true,

@@ -29,7 +29,7 @@ export class AtithiWebStack extends cdk.Stack {
     const isProd = stage === 'prod';
 
     const siteBucket = new s3.Bucket(this, 'SiteBucket', {
-      bucketName: `atithi-web-${stage}-${this.account}`,
+      bucketName: `atithi-web-${stage}-${this.account}-${this.region}`,
       encryption: s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       enforceSSL: true,

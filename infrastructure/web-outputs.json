@@ -8,5 +8,10 @@
     "ExportsOutputRefUserPoolWebClient4C9370B02E2C9FF9": "3imnomfcm04684raschj4v1gkk",
     "ExportsOutputRefUserPool6BA7E5F296FD7236": "ap-south-1_iuPIdNDfA",
     "ExportsOutputFnGetAttHttpApiF5A9A8A7ApiEndpoint082134F8": "https://wqj8szx7u1.execute-api.ap-south-1.amazonaws.com"
+  },
+  "AtithiWeb-dev": {
+    "FrontendEnv": "{\"VITE_API_BASE_URL\":\"https://wqj8szx7u1.execute-api.ap-south-1.amazonaws.com\",\"VITE_USER_POOL_ID\":\"ap-south-1_iuPIdNDfA\",\"VITE_USER_POOL_CLIENT_ID\":\"3imnomfcm04684raschj4v1gkk\",\"VITE_AWS_REGION\":\"ap-south-1\"}",
+    "WebUrl": "https://d1en7jrc7fvda4.cloudfront.net",
+    "DistributionId": "E335F970P66HMA"
   }
 }
