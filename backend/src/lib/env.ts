@@ -43,6 +43,8 @@ export const env = {
     bedrockModelId: optional('BEDROCK_MODEL_ID', 'anthropic.claude-3-haiku-20240307-v1:0'),
     bedrockRegion: optional('BEDROCK_REGION', optional('AWS_REGION', 'ap-south-1')),
     openaiModel: optional('OPENAI_MODEL', 'gpt-4o-mini'),
+    /** OpenAI-compatible base URL. Point at Moonshot to use Kimi (kimi-k3). */
+    openaiBaseUrl: optional('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
     anthropicModel: optional('ANTHROPIC_MODEL', 'claude-3-5-haiku-latest'),
     apiKeySecretId: optional('AI_API_KEY_SECRET_ID'),
     /** Direct key is only for local development — production uses Secrets Manager. */

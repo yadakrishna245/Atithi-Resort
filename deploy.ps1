@@ -50,6 +50,29 @@ $env:CDK_DEFAULT_ACCOUNT = $Account
 $env:CDK_DEFAULT_REGION  = $Region
 $env:STAGE               = $Stage
 
+# --- AI provider: Kimi (Moonshot) by default -----------------------------
+# Kimi is OpenAI-compatible. The key is read from Secrets Manager at runtime,
+# never baked into code. Use the fast 'highspeed' model — the k2.6/k3 reasoning
+# models take 30s+ per call and blow past API Gateway's 29s ceiling.
+# Override any of these by exporting the env var before running the script.
+if (-not $env:AI_PROVIDER)    { $env:AI_PROVIDER    = "openai" }
+if (-not $env:OPENAI_BASE_URL){ $env:OPENAI_BASE_URL = "https://api.moonshot.ai/v1" }
+if (-not $env:OPENAI_MODEL)   { $env:OPENAI_MODEL   = "kimi-k2.7-code-highspeed" }
+$aiSecretId = if ($env:AI_API_KEY_SECRET_ID) { $env:AI_API_KEY_SECRET_ID } else { "atithi/$Stage/ai-api-key" }
+
+# Only wire the AI key if the secret actually exists — otherwise fall back to
+# Bedrock so the deploy still succeeds on an account without a Kimi key.
+aws secretsmanager describe-secret --secret-id $aiSecretId --region $Region 2>$null | Out-Null
+if ($LASTEXITCODE -eq 0) {
+  $env:AI_API_KEY_SECRET_ID = $aiSecretId
+  Write-Host "==> AI: Kimi via $($env:OPENAI_MODEL) (secret '$aiSecretId')" -ForegroundColor Cyan
+} else {
+  Write-Host "==> AI key secret '$aiSecretId' not found — falling back to Bedrock." -ForegroundColor Yellow
+  Write-Host "    To use Kimi: aws secretsmanager create-secret --name $aiSecretId --secret-string '{\"apiKey\":\"sk-...\"}' --region $Region" -ForegroundColor DarkGray
+  $env:AI_PROVIDER = "bedrock"
+  $env:AI_API_KEY_SECRET_ID = ""
+}
+
 $cdk = "npx cdk"
 
 # --- 1. Install + build ---------------------------------------------------

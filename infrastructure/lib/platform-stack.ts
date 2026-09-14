@@ -178,6 +178,11 @@ export class AtithiPlatformStack extends cdk.Stack {
       BEDROCK_MODEL_ID:
         process.env['BEDROCK_MODEL_ID'] ?? 'anthropic.claude-3-haiku-20240307-v1:0',
       BEDROCK_REGION: process.env['BEDROCK_REGION'] ?? 'ap-south-1',
+      // OpenAI-compatible providers (OpenAI, or Kimi/Moonshot via OPENAI_BASE_URL).
+      // For Kimi: AI_PROVIDER=openai, OPENAI_BASE_URL=https://api.moonshot.ai/v1,
+      // OPENAI_MODEL=kimi-k3, and store the key in the AI_API_KEY_SECRET_ID secret.
+      OPENAI_MODEL: process.env['OPENAI_MODEL'] ?? 'gpt-4o-mini',
+      OPENAI_BASE_URL: process.env['OPENAI_BASE_URL'] ?? 'https://api.openai.com/v1',
       AI_API_KEY_SECRET_ID: process.env['AI_API_KEY_SECRET_ID'] ?? '',
       AI_MAX_OUTPUT_TOKENS: process.env['AI_MAX_OUTPUT_TOKENS'] ?? '800',
       NODE_OPTIONS: '--enable-source-maps',
@@ -252,7 +257,9 @@ export class AtithiPlatformStack extends cdk.Stack {
     const searchFn = makeFn('search', 'handlers/search.ts', 'searchHandler', { memory: 1024 });
     const naturalSearchFn = makeFn('natural-search', 'handlers/search.ts', 'naturalSearchHandler', {
       memory: 1024,
-      timeout: 25,
+      // API Gateway HTTP API hard-caps at 29s. Kimi's always-on reasoning is slow
+      // (~15-25s), so give the Lambda the full budget up to that ceiling.
+      timeout: 29,
       ai: true,
     });
     const getPropertyFn = makeFn('get-property', 'handlers/properties.ts', 'getPropertyHandler');

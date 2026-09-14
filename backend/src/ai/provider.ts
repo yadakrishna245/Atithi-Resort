@@ -124,13 +124,28 @@ async function callBedrock(req: LlmRequest, maxTokens: number, temperature: numb
 async function callOpenAi(req: LlmRequest, maxTokens: number, temperature: number): Promise<string> {
   const key = await getApiKey();
 
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+  // ponytail: Moonshot/Kimi rejects any temperature other than 1 ("only 1 is
+  // allowed for this model") on kimi-k2.6/k3. Determinism still comes from the
+  // grounding scanner in groundedAssistant.ts, not from temperature.
+  const isMoonshot = env.ai.openaiBaseUrl.includes('moonshot.ai');
+  const effectiveTemperature = isMoonshot ? 1 : temperature;
+
+  // ponytail: every current Kimi model is a thinking model — reasoning is always
+  // on and cannot be disabled (reasoning_effort only accepts "max"). Reasoning
+  // tokens count against max_tokens, so a tight cap (e.g. 400) is consumed
+  // entirely by reasoning and leaves content empty with finish_reason=length.
+  // Moonshot's own guidance is to raise the budget. Ceiling: reasoning length is
+  // unbounded, so a pathological query could still truncate; 2048 covered the
+  // parser and grounding prompts seen in practice (~1000 reasoning tokens).
+  const effectiveMaxTokens = isMoonshot ? Math.max(maxTokens, 2048) : maxTokens;
+
+  const res = await fetch(`${env.ai.openaiBaseUrl}/chat/completions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
     body: JSON.stringify({
       model: env.ai.openaiModel,
-      max_tokens: maxTokens,
-      temperature,
+      max_tokens: effectiveMaxTokens,
+      temperature: effectiveTemperature,
       ...(req.json ? { response_format: { type: 'json_object' } } : {}),
       messages: [
         { role: 'system', content: req.system },
@@ -139,7 +154,7 @@ async function callOpenAi(req: LlmRequest, maxTokens: number, temperature: numbe
     }),
   });
 
-  if (!res.ok) throw new UpstreamError(`OpenAI (${res.status})`);
+  if (!res.ok) throw new UpstreamError(`OpenAI-compatible API (${res.status})`);
 
   const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
   return data.choices?.[0]?.message?.content ?? '';

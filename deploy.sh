@@ -42,6 +42,28 @@ export CDK_DEFAULT_ACCOUNT="$ACCOUNT"
 export CDK_DEFAULT_REGION="$REGION"
 export STAGE
 
+# --- AI provider: Kimi (Moonshot) by default -----------------------------
+# Kimi is OpenAI-compatible. The key is read from Secrets Manager at runtime,
+# never baked into code. Use the fast 'highspeed' model — the k2.6/k3 reasoning
+# models take 30s+ per call and blow past API Gateway's 29s ceiling.
+# Override any of these by exporting the env var before running the script.
+export AI_PROVIDER="${AI_PROVIDER:-openai}"
+export OPENAI_BASE_URL="${OPENAI_BASE_URL:-https://api.moonshot.ai/v1}"
+export OPENAI_MODEL="${OPENAI_MODEL:-kimi-k2.7-code-highspeed}"
+AI_SECRET_ID="${AI_API_KEY_SECRET_ID:-atithi/$STAGE/ai-api-key}"
+
+# Only wire the AI key if the secret actually exists — otherwise fall back to
+# Bedrock so the deploy still succeeds on an account without a Kimi key.
+if aws secretsmanager describe-secret --secret-id "$AI_SECRET_ID" --region "$REGION" >/dev/null 2>&1; then
+  export AI_API_KEY_SECRET_ID="$AI_SECRET_ID"
+  echo "==> AI: Kimi via $OPENAI_MODEL (secret '$AI_SECRET_ID')"
+else
+  echo "==> AI key secret '$AI_SECRET_ID' not found — falling back to Bedrock."
+  echo "    To use Kimi: aws secretsmanager create-secret --name $AI_SECRET_ID --secret-string '{\"apiKey\":\"sk-...\"}' --region $REGION"
+  export AI_PROVIDER="bedrock"
+  export AI_API_KEY_SECRET_ID=""
+fi
+
 CDK="npx cdk"
 
 # --- 1. Install + build ---------------------------------------------------
